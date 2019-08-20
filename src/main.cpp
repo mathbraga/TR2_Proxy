@@ -1,6 +1,5 @@
 /*
 	Classe principal que implementa a Command Line Interface, que printa menus e define a excução do Aracne
-
 */
 
 #include <iostream>
@@ -172,4 +171,3 @@ int main(int argc, char **argv){
 
 	return 0;
 }
-
