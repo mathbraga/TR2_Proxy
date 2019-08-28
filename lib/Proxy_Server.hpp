@@ -21,6 +21,7 @@ public:
 	std::string get_client_request();
 	void reply_client(std::string);
 	std::string make_request(std::string);
+	void done();
 
 
 };

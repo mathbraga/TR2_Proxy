@@ -5,12 +5,12 @@ salvar string em arquivo, imprimir na tela a árvore, etc
 */
 
 
-#include "../include/HTML_Parser.hpp"
-#include "../include/Spider.hpp"
-#include "../include/Proxy_Server.hpp"
-#include "../include/HTTP_Request.hpp"
-#include "../include/HTTP_Response.hpp"
-#include "../include/String_Functions.hpp"
+#include "../lib/HTML_Parser.hpp"
+#include "../lib/Spider.hpp"
+#include "../lib/Proxy_Server.hpp"
+#include "../lib/HTTP_Request.hpp"
+#include "../lib/HTTP_Response.hpp"
+#include "../lib/String_Functions.hpp"
 
 using namespace std;
 
@@ -53,7 +53,7 @@ Spider::Spider(string url){
 };
 
 // método que avalia se uma url está abaixo do domínio da host principal do spider ( e se é válida)
-bool Spider::eval_url(string url){
+bool Spider::isValid(string url){
 	if(url.size() ==0) return false;
 	string internal = url;
 	vector<string> result = String_Functions::split(internal, "//");
@@ -63,7 +63,6 @@ bool Spider::eval_url(string url){
 	}
 	if(result.size()>2) return false;
 	
-	
 	if(internal.find('/')!=0){
 		vector<string> result2 = String_Functions::split(internal, "/");
 		if(host.length()==0){
@@ -72,18 +71,16 @@ bool Spider::eval_url(string url){
 			if(host!=result2[0]) return false;
 		}
 	}
-
 	return true;
 }
 
 // método que retira o host da url passada (para ter um padrão)
-string Spider::parse_url(string url){
+string Spider::parseUrl(string url){
 	string parsed("");
 	string internal = url;
 	vector<string> result = String_Functions::split(internal, "//");
 	if(result.size()==2)		
 		internal = result[1];
-		
 	
 	if(internal.find('/')!=0){
 		vector<string> result2 = String_Functions::split_on_first(internal, "/");
@@ -99,27 +96,23 @@ string Spider::parse_url(string url){
 	}
 
 	if(parsed!=url) aliases[parsed]=url;
-	
 	return parsed;
 }
 
 //método que gera a árvore hipertextual
-void Spider::generate_tree(int levels){
+void Spider::crawl(int levels){
 	int i = levels;
 	visited_urls.clear();
 	par_child.clear();
 	htmls.clear();
-
 	if(!valid){
 		return;
 	}
-
 	Proxy_Server proxy = Proxy_Server();
 	HTTP_Request request = HTTP_Request();
 	request.treat();
 	set<string> to_request;
 	to_request.insert(root);
-
 	do{
 		set<string> to_request_next;
 		for (std::set<string>::iterator url=to_request.begin(); url!=to_request.end(); ++url){
@@ -137,21 +130,10 @@ void Spider::generate_tree(int levels){
 					set<string> all_hrefs = HTML_Parser::get_hrefs(response.data.c_str());
 					set<string> local_hrefs;
 					for (std::set<string>::iterator it=all_hrefs.begin(); it!=all_hrefs.end(); ++it){
-				        if(this->eval_url(*it)){
-				        	local_hrefs.insert(this->parse_url(*it));
+				        if(this->isValid(*it)){
+				        	local_hrefs.insert(this->parseUrl(*it));
 				        }
 		     		}
-				 //    all_hrefs = HTML_Parser::get_sources(response.data.c_str());
-					// for (std::set<string>::iterator it=all_hrefs.begin(); it!=all_hrefs.end(); ++it)
-				 //        if(this->eval_url(*it))
-				 //        	local_hrefs.insert(this->parse_url(*it));
-
-				 //    all_hrefs = HTML_Parser::get_imports(response.data.c_str());
-					// for (std::set<string>::iterator it=all_hrefs.begin(); it!=all_hrefs.end(); ++it)
-				 //        if(this->eval_url(*it))
-				 //        	local_hrefs.insert(this->parse_url(*it));    	    
-		        
-		    		
 				    par_child[*url]=local_hrefs;
 				    for (std::set<string>::iterator it=local_hrefs.begin(); it!=local_hrefs.end(); ++it)
 				        to_request_next.insert(*it);
@@ -165,7 +147,7 @@ void Spider::generate_tree(int levels){
 
 }
 // método que faz o parse de uma url pra um nome de arquivo (retira os "/")
-std::string Spider::url_to_filename(std::string url_in){
+std::string Spider::url2filename(std::string url_in){
 
 	string filename("");
 	string url = url_in;
@@ -189,14 +171,14 @@ std::string Spider::url_to_filename(std::string url_in){
 
 // método que realiza o dump a partir da árvore hipertextual e outras estruturas preenchidas
 void Spider::dump(int levels){
-	this->generate_tree(levels);
+	this->crawl(levels);
 	set<string> to_translate = visited_urls;
 
 	dictionary[root]="index.html";
 	to_translate.erase(root);
 
 	for(set<string>::iterator it = to_translate.begin(); it!=to_translate.end(); ++it)
-		dictionary[*it]=Spider::url_to_filename(*it);
+		dictionary[*it]=Spider::url2filename(*it);
 
 
 	for(std::map<string,string>::iterator it=htmls.begin(); it!=htmls.end(); ++it)
@@ -225,19 +207,10 @@ void Spider::dump(int levels){
     }
     cout << "Saved files in a new directory named " << host << endl;
     cout << "File \"index.html\" is the root." << endl;
-
-    // cout << endl << "DICTIONARY: " << endl;
-    // for(map<string,string>::iterator it = dictionary.begin(); it!=dictionary.end(); ++it)
-    // 	cout << it->first << " : " << it->second << endl;
-		
-    // cout << "ALIASES: " << endl;
-    // for(map<string,string>::iterator it = aliases.begin(); it!=aliases.end(); ++it)
-    // 	cout << it->first << ": " << it->second << endl;
-
 }
 
 // método que printa a árvore hipertextual
-void Spider::print_tree(int levels){
+void Spider::printCrawled(int levels){
 
 	if(levels==0){
 		cout << "TREE OF URLS:"<<endl<<endl;
@@ -273,10 +246,5 @@ void Spider::print_tree(int levels){
 			for(int k =0; k<num_spaces; k++) cout << " ";
 		}
 		cout << endl;
-
-
-
-	}else{
-		cout << "Sorry, this program only print 1 or 2 levels" << endl;		
 	}
 }

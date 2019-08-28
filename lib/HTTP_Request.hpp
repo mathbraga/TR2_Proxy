@@ -23,7 +23,6 @@ public:
 	std::string body;
 	void print();
 	void treat();
-	bool eval();
 	std::string assembly();
 
 };

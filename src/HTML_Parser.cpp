@@ -1,8 +1,5 @@
-#include "../include/HTML_Parser.hpp"
-/*
-    A classe HTML_Parser contém funções úteis para extrair informações de conteúdo HTML através de regex.
+#include "../lib/HTML_Parser.hpp"
 
-*/
 
 
 std::set<std::string> HTML_Parser::get_hrefs(const char *body){
