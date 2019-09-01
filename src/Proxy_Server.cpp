@@ -6,7 +6,7 @@ e envio de requisições HTTP para servidores de origem.
 */
 
 #include "../lib/Proxy_Server.hpp"
-#include "../lib/HTTP_Request.hpp"
+#include "../lib/Request.hpp"
 
 int server_sockfd, client_sockfd, outbound_socket;
 struct sockaddr_in address;
@@ -59,12 +59,12 @@ std::string Proxy_Server::get_client_request(){
     int num = read(client_sockfd , buffer, sizeof(buffer));
     if(num >0){
         string req(buffer);
-        HTTP_Request request = HTTP_Request(req);
+        Request request = Request(req);
         request.treat();
         return request.assembly();
     }
 
-    HTTP_Request request = HTTP_Request();
+    Request request = Request();
     request.method = "POST";
     return request.assembly();
 
@@ -83,7 +83,7 @@ std::string Proxy_Server::make_request(std::string req){
 
     if((outbound_socket = socket(AF_INET,SOCK_STREAM,0)) < 0);
 
-    HTTP_Request reqst = HTTP_Request(request);
+    Request reqst = Request(request);
     string host = reqst.fields["Host:"];
 
     req_host = gethostbyname(host.c_str());

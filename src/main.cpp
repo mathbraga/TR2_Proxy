@@ -7,8 +7,8 @@
 #include "../lib/HTML_Parser.hpp"
 #include "../lib/Spider.hpp"
 #include "../lib/Proxy_Server.hpp"
-#include "../lib/HTTP_Request.hpp"
-#include "../lib/HTTP_Response.hpp"
+#include "../lib/Request.hpp"
+#include "../lib/Response.hpp"
 #include "../lib/String_Functions.hpp"
 
 using namespace std;
@@ -59,7 +59,7 @@ void sniffer(){
 	cout << "Waiting for Request..." << endl;
 
 	string req = server.get_client_request();
-	HTTP_Request request = HTTP_Request(req);
+	Request request = Request(req);
 	cout << "Request received - Host: " << request.fields["Host:"] << " URL: " << request.url << endl;
 	std::cin.ignore();
 	std::cin.ignore();
@@ -69,7 +69,7 @@ void sniffer(){
 	req = String_Functions::string_from_file("request.txt");
 	cin.ignore();
 	string reply = server.make_request(req);
-	HTTP_Response response = HTTP_Response(reply);
+	Response response = Response(reply);
 	String_Functions::string_to_file(reply, ".", "response.txt");
 	system("notepad.exe response.txt");
 	reply = String_Functions::string_from_file("response.txt");

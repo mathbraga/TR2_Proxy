@@ -3,12 +3,12 @@
 
 */
 
-#include "../lib/HTTP_Response.hpp"
+#include "../lib/Response.hpp"
 #include "../lib/String_Functions.hpp"
 
 using namespace std;
 
-HTTP_Response::HTTP_Response(std::string Response_String){
+Response::Response(std::string Response_String){
 
     vector<string> splitted = String_Functions::split(Response_String, "\r\n\r\n");
     if(splitted.size()<2)
@@ -33,11 +33,11 @@ HTTP_Response::HTTP_Response(std::string Response_String){
 };
 
 
-HTTP_Response::HTTP_Response(){
+Response::Response(){
     
 };
 
-std::string HTTP_Response::assembly(){
+std::string Response::assembly(){
     using namespace std;
     string Response("");
 
@@ -65,7 +65,7 @@ std::string HTTP_Response::assembly(){
 }
 
 
-void HTTP_Response::print(){
+void Response::print(){
     cout << "status code: " << status_code << endl;
     cout << "version: " << version << endl;
 

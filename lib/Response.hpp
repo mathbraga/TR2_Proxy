@@ -1,5 +1,5 @@
-#ifndef HTTP_REQ_H
-#define HTTP_REQ_H
+#ifndef Response_Header
+#define Response_Header
 
 #include <iostream>
 #include <string>
@@ -7,23 +7,20 @@
 #include <map>
 #include <string.h>
 
-/* Headers da classe HTTP_Request */
-
-class HTTP_Request{
+class Response{
 
 public:
 
-	HTTP_Request(std::string);
-	HTTP_Request();
+	Response(std::string);
+	Response();
 
-	std::string method;
-	std::string url;
+	std::string status_code;
 	std::string version;
 	std::map<std::string, std::string> fields; 
-	std::string body;
+	std::string data;
 	void print();
-	void treat();
 	std::string assembly();
+
 
 };
 

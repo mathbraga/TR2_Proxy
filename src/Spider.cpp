@@ -8,8 +8,8 @@ salvar string em arquivo, imprimir na tela a árvore, etc
 #include "../lib/HTML_Parser.hpp"
 #include "../lib/Spider.hpp"
 #include "../lib/Proxy_Server.hpp"
-#include "../lib/HTTP_Request.hpp"
-#include "../lib/HTTP_Response.hpp"
+#include "../lib/Request.hpp"
+#include "../lib/Response.hpp"
 #include "../lib/String_Functions.hpp"
 
 using namespace std;
@@ -109,7 +109,7 @@ void Spider::crawl(int levels){
 		return;
 	}
 	Proxy_Server proxy = Proxy_Server();
-	HTTP_Request request = HTTP_Request();
+	Request request = Request();
 	request.treat();
 	set<string> to_request;
 	to_request.insert(root);
@@ -122,7 +122,7 @@ void Spider::crawl(int levels){
 				request.fields["Host:"] = host;
 				cout << "Inspecting "<< *url<<endl;
 				string reply = proxy.make_request(request.assembly());
-				HTTP_Response response = HTTP_Response(reply);
+				Response response = Response(reply);
 				if(response.status_code=="200 OK"){
 					
 					htmls[*url] = response.data;

@@ -4,12 +4,12 @@
 */
 
 
-#include "../lib/HTTP_Request.hpp"
+#include "../lib/Request.hpp"
 #include "../lib/String_Functions.hpp"
 
 using namespace std;
 
-HTTP_Request::HTTP_Request(std::string Request_String){
+Request::Request(std::string Request_String){
 
 
     vector<string> splitted = String_Functions::split(Request_String, "\r\n\r\n");
@@ -34,7 +34,7 @@ HTTP_Request::HTTP_Request(std::string Request_String){
 };
 
 
-HTTP_Request::HTTP_Request(){
+Request::Request(){
 
     method = "GET";
     version = "HTTP/1.1";
@@ -42,7 +42,7 @@ HTTP_Request::HTTP_Request(){
     body = "";
 
 };
-std::string HTTP_Request::assembly(){
+std::string Request::assembly(){
     using namespace std;
     string Request("");
 
@@ -66,7 +66,7 @@ std::string HTTP_Request::assembly(){
 
 }
 
-void HTTP_Request::print(){
+void Request::print(){
     cout << "method: " << method << endl;
     cout << "version: " << version << endl;
     cout << "url: " << url << endl;
@@ -78,7 +78,7 @@ void HTTP_Request::print(){
 }
 
 
-void HTTP_Request::treat(){
+void Request::treat(){
     fields["Connection:"] = "close";
     fields["Accept-Encoding:"] = "identity";
 }
