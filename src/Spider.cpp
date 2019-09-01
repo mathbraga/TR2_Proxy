@@ -213,7 +213,7 @@ void Spider::dump(int levels){
 void Spider::printCrawled(int levels){
 
 	if(levels==0){
-		cout << "TREE OF URLS:"<<endl<<endl;
+		cout << "URL crawled:"<<endl<<endl;
 		cout << root << "---> ";
 		int num_spaces = root.size()+5;
 		set<string> childs = par_child[root];	
@@ -225,7 +225,7 @@ void Spider::printCrawled(int levels){
 		cout << endl;
 	}
 	else if(levels==1){
-		cout << "TREE OF URLS:"<<endl<<endl;
+		cout << "URL crawled:"<<endl<<endl;
 		cout << root << "---> ";
 		int num_spaces = root.size()+5;
 		set<string> childs = par_child[root];

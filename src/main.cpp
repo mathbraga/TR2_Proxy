@@ -13,7 +13,7 @@
 
 using namespace std;
 
-int port;
+int port,test=1;
 
 void cmdInput(int argc, char **argv){
 	port = 8228;
@@ -50,6 +50,7 @@ void sniffer(){
 	Proxy_Server server = Proxy_Server();
 	server.init(port);
 	string wait;
+	char key;
 
 	system("clear");
 	cout << "Traffic inspector is listening on port " << port << endl;
@@ -61,20 +62,34 @@ void sniffer(){
 	string req = server.get_client_request();
 	Request request = Request(req);
 	cout << "Request received - Host: " << request.fields["Host:"] << " URL: " << request.url << endl;
-	std::cin.ignore();
-	std::cin.ignore();
 	String_Functions::string_to_file(req, ".", "request.txt");
-	system("notepad.exe request.txt");
-	
+	cout << "Edit Request? (Y/N)" << endl;
+	cin >> key;
+	if(key=='Y' || key=='y'){
+		system("notepad.exe request.txt");
+	}
+	else{
+		std::cin.ignore();
+	}
 	req = String_Functions::string_from_file("request.txt");
-	cin.ignore();
+
+
 	string reply = server.make_request(req);
 	Response response = Response(reply);
 	String_Functions::string_to_file(reply, ".", "response.txt");
-	system("notepad.exe response.txt");
+	cout << "Edit Response from " << request.fields["Host:"] << "? (Y/N)" << endl;
+	cin >> key;
+	if(key=='Y' || key=='y'){
+		system("notepad.exe response.txt");
+	}
+	else{
+		std::cin.ignore();
+	}
 	reply = String_Functions::string_from_file("response.txt");
 	server.reply_client(reply);
 	server.done();
+	cout << "Go back to menu (ENTER)" << endl;
+	std::cin.ignore();
 	system("clear");
 	return;
 	
@@ -97,8 +112,9 @@ void crawler(){
 		spider = Spider(url);
 	}
 
-	spider.crawl(1);
-	spider.printCrawled(1);
+	spider.crawl(test);
+	spider.printCrawled(test);
+	cout << "Go back to menu (ENTER)" << endl;
 	std::cin.ignore();
 	std::cin.ignore();
 }
@@ -109,7 +125,7 @@ void dump(){
 	string url;
 	system("clear");
 	cout << "Dump website" << endl;
-	cout << "Type the url you want to dump: ";
+	cout << "URL to dump: ";
 	cin >> url;
 	Spider spider = Spider(url);
 
@@ -117,20 +133,12 @@ void dump(){
 		system("clear");
 		cout << "You have typed an invalid url!" << endl;
 		cout << "Dump website" << endl;
-		cout << "Type the url you want to dump= ";
+		cout << "URL to dump: ";
 		cin >> url;
 		spider = Spider(url);
 	}
-	int lev=0;
-	while(lev<1 || lev>2){
-		system("clear");
-		string levels;
-		cout << "Type the number of levels you want to inspect [0 < l < 4]= " ;
-		cin >> levels;
-		lev = atoi(levels.c_str());
-	}
-	spider.dump(lev-1);
-
+	spider.dump(test);
+	cout << "Go back to menu (ENTER)" << endl;
 	std::cin.ignore();
 	std::cin.ignore();
 
