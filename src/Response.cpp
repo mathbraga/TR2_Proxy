@@ -1,7 +1,3 @@
-/*
-    A classe HTTP_Response tem a função de fazer o parse da resposta HTTP, para posterior análise e tratamento.
-
-*/
 
 #include "../lib/Response.hpp"
 #include "../lib/String_Functions.hpp"

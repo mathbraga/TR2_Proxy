@@ -1,9 +1,3 @@
-/*
-    Na classe Proxy_Server está implementada toda lógica de manipulação de sockets
-necessária para implementação do programa. Métodos que lidam com requisições do browser
-e envio de requisições HTTP para servidores de origem.
-
-*/
 
 #include "../lib/Proxy_Server.hpp"
 #include "../lib/Request.hpp"
@@ -16,7 +10,7 @@ int addrlen, valread;
 int opt;
 char buffer[64768];
 
-// Método que faz o set up do Servidor (coloca pra escutar na porta)
+
 void Proxy_Server::init(int port){
     
 	if ((server_sockfd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
@@ -43,13 +37,13 @@ void Proxy_Server::init(int port){
 };
 
 
-// Método que busca requests vindas do browser
 std::string Proxy_Server::get_client_request(){
     
     using namespace std;
 
     char buffer[542768];
-    bzero((char *) &buffer, sizeof(buffer));
+    
+    memset((char *) &buffer, '\0', sizeof(buffer));
     if ((client_sockfd = accept(server_sockfd, (struct sockaddr *)&address, (socklen_t*)&addrlen))<0)
     {
         perror("Falha ao aceitar conexões");
@@ -71,8 +65,6 @@ std::string Proxy_Server::get_client_request(){
 
 }
 
-
-// Método que faz requests HTTP para o servidor de origem e retorna a sua resposta
 std::string Proxy_Server::make_request(std::string req){
 
     using namespace std;
@@ -88,7 +80,7 @@ std::string Proxy_Server::make_request(std::string req){
 
     req_host = gethostbyname(host.c_str());
     if ( (req_host == NULL) || (req_host->h_addr == NULL) ) {
-        std::cout << "Error retrieving DNS information. Can't resolve: " <<  host << std::endl;
+        std::cout << "Erro no DNS lookup: " <<  host << std::endl;
         exit(1);
     }
 
@@ -115,7 +107,6 @@ std::string Proxy_Server::make_request(std::string req){
 
 }
 
-// Método que envia respostas ao Browser
 void Proxy_Server::reply_client(std::string reply){
     if(send(client_sockfd, reply.c_str(), reply.length(), 0)<0){
         perror("Falha ao responder browser");

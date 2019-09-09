@@ -53,10 +53,10 @@ void sniffer(){
 	char key;
 
 	system("clear");
-	cout << "Traffic inspector is listening on port " << port << endl;
+	cout << "Sniffing port " << port << endl;
 	cout << "Waiting for Request..." << endl;	
 	system("clear");
-	cout << "Traffic inspector is listening on port " << port << endl;
+	cout << "Sniffing port " << port << endl;
 	cout << "Waiting for Request..." << endl;
 
 	string req = server.get_client_request();
@@ -68,9 +68,6 @@ void sniffer(){
 	if(key=='Y' || key=='y'){
 		system("notepad.exe request.txt");
 	}
-	else{
-		std::cin.ignore();
-	}
 	req = String_Functions::string_from_file("request.txt");
 
 
@@ -81,9 +78,6 @@ void sniffer(){
 	cin >> key;
 	if(key=='Y' || key=='y'){
 		system("notepad.exe response.txt");
-	}
-	else{
-		std::cin.ignore();
 	}
 	reply = String_Functions::string_from_file("response.txt");
 	server.reply_client(reply);
@@ -111,7 +105,7 @@ void crawler(){
 		cin >> url;
 		spider = Spider(url);
 	}
-
+	cout << "wait a moment..." << endl;
 	spider.crawl(test);
 	spider.printCrawled(test);
 	cout << "Go back to menu (ENTER)" << endl;
@@ -137,6 +131,7 @@ void dump(){
 		cin >> url;
 		spider = Spider(url);
 	}
+	cout << "wait a moment..." << endl;
 	spider.dump(test);
 	cout << "Go back to menu (ENTER)" << endl;
 	std::cin.ignore();

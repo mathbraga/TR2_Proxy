@@ -1,7 +1,3 @@
-/*
-    Classe criada para facilitar manipulações de string e evitar retrabalho
-*/
-
 
 #include "../lib/String_Functions.hpp"
 

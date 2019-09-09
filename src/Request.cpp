@@ -1,8 +1,3 @@
-/*
-    A classe HTTP_Request tem a função de fazer o parse da requisição HTTP, para posterior análise e tratamento.
-
-*/
-
 
 #include "../lib/Request.hpp"
 #include "../lib/String_Functions.hpp"

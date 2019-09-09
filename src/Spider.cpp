@@ -1,9 +1,3 @@
-/*
-	A classe Spider realiza tanto a função de gerar a árvore hipertextual quanto o dump do cliente recursivo.
-Basicamente, se utiliza de todas as outras classes do projeto para conseguir fazer requests, tratar as respostas,
-salvar string em arquivo, imprimir na tela a árvore, etc
-*/
-
 
 #include "../lib/HTML_Parser.hpp"
 #include "../lib/Spider.hpp"
@@ -14,7 +8,7 @@ salvar string em arquivo, imprimir na tela a árvore, etc
 
 using namespace std;
 
-// construtor recebe uma url e trata ela pra ver se é válida (se contém um host)
+
 Spider::Spider(string url){
 	string internal = url;
 	vector<string> result = String_Functions::split(internal, "//");
@@ -52,7 +46,6 @@ Spider::Spider(string url){
 
 };
 
-// método que avalia se uma url está abaixo do domínio da host principal do spider ( e se é válida)
 bool Spider::isValid(string url){
 	if(url.size() ==0) return false;
 	string internal = url;
@@ -74,7 +67,6 @@ bool Spider::isValid(string url){
 	return true;
 }
 
-// método que retira o host da url passada (para ter um padrão)
 string Spider::parseUrl(string url){
 	string parsed("");
 	string internal = url;
@@ -99,7 +91,7 @@ string Spider::parseUrl(string url){
 	return parsed;
 }
 
-//método que gera a árvore hipertextual
+
 void Spider::crawl(int levels){
 	int i = levels;
 	visited_urls.clear();
@@ -120,7 +112,6 @@ void Spider::crawl(int levels){
 				visited_urls.insert(*url);
 				request.url = *url;
 				request.fields["Host:"] = host;
-				cout << "Inspecting "<< *url<<endl;
 				string reply = proxy.make_request(request.assembly());
 				Response response = Response(reply);
 				if(response.status_code=="200 OK"){
@@ -146,7 +137,7 @@ void Spider::crawl(int levels){
 	}while(i>=0);
 
 }
-// método que faz o parse de uma url pra um nome de arquivo (retira os "/")
+
 std::string Spider::url2filename(std::string url_in){
 
 	string filename("");
@@ -169,7 +160,7 @@ std::string Spider::url2filename(std::string url_in){
 	return filename;
 }
 
-// método que realiza o dump a partir da árvore hipertextual e outras estruturas preenchidas
+
 void Spider::dump(int levels){
 	this->crawl(levels);
 	set<string> to_translate = visited_urls;
@@ -205,16 +196,16 @@ void Spider::dump(int levels){
 		cout << "Saving file: " << dictionary[it->first] << endl;
         String_Functions::string_to_file(it->second, host.c_str(), dictionary[it->first].c_str());   
     }
-    cout << "Saved files in a new directory named " << host << endl;
-    cout << "File \"index.html\" is the root." << endl;
+    cout << "Files saved in " << host << endl;
+   
 }
 
-// método que printa a árvore hipertextual
+
 void Spider::printCrawled(int levels){
 
 	if(levels==0){
 		cout << "URL crawled:"<<endl<<endl;
-		cout << root << "---> ";
+		cout << root << "--> ";
 		int num_spaces = root.size()+5;
 		set<string> childs = par_child[root];	
 		for(set<string>::iterator it = childs.begin(); it!=childs.end(); ++it){
@@ -226,7 +217,7 @@ void Spider::printCrawled(int levels){
 	}
 	else if(levels==1){
 		cout << "URL crawled:"<<endl<<endl;
-		cout << root << "---> ";
+		cout << root << "--> ";
 		int num_spaces = root.size()+5;
 		set<string> childs = par_child[root];
 		set<string> alrd_visited;
@@ -234,7 +225,7 @@ void Spider::printCrawled(int levels){
 		for(set<string>::iterator it = childs.begin(); it!=childs.end(); ++it){
 			if(alrd_visited.find(*it)==alrd_visited.end()){
 				alrd_visited.insert(*it);
-				cout << *it << "---> ";
+				cout << *it << "--> ";
 				int num_spaces2 = num_spaces + (*it).size()+5;
 				set<string> granchilds = par_child[*it];	
 				for(set<string>::iterator it2 = granchilds.begin(); it2!=granchilds.end(); ++it2){
