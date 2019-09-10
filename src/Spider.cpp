@@ -25,7 +25,7 @@ Spider::Spider(string url){
 	}
 	
 	if(internal.find('/')!=0 && internal.find('/')<internal.length()){
-		vector<string> result2 = String_Functions::split_on_first(internal, "/");
+		vector<string> result2 = String_Functions::splitOnFirst(internal, "/");
 		if(host.length()==0){
 			host = result2[0];	
 		}else{
@@ -75,7 +75,7 @@ string Spider::parseUrl(string url){
 		internal = result[1];
 	
 	if(internal.find('/')!=0){
-		vector<string> result2 = String_Functions::split_on_first(internal, "/");
+		vector<string> result2 = String_Functions::splitOnFirst(internal, "/");
 		parsed = "/";
 		parsed.append(result2[1]);
 	}else{
@@ -91,9 +91,31 @@ string Spider::parseUrl(string url){
 	return parsed;
 }
 
+std::string Spider::url2filename(std::string url_in){
 
-void Spider::crawl(int levels){
-	int i = levels;
+	string filename("");
+	string url = url_in;
+	string slash("-");
+	vector<string> splitted = String_Functions::split(url, "/");
+	if(splitted.size()==1 && splitted[0].length()==0){
+		filename = "root.html";	
+		return filename;
+	}
+	for(int i = 0; i<splitted.size(); i++ ){
+		filename.append(splitted[i]);
+	}
+	if(filename.find(".")>filename.length())
+		filename.append(".html");
+	else if(filename.find("?")<filename.length()){
+		int ask = filename.find("?");
+		filename = filename.substr(0,ask);
+	}
+	return filename;
+}
+
+
+void Spider::crawl(){
+	int i = 1;
 	visited_urls.clear();
 	par_child.clear();
 	htmls.clear();
@@ -138,31 +160,45 @@ void Spider::crawl(int levels){
 
 }
 
-std::string Spider::url2filename(std::string url_in){
 
-	string filename("");
-	string url = url_in;
-	string slash("-");
-	vector<string> splitted = String_Functions::split(url, "/");
-	if(splitted.size()==1 && splitted[0].length()==0){
-		filename = "root.html";	
-		return filename;
-	}
-	for(int i = 0; i<splitted.size(); i++ ){
-		filename.append(splitted[i]);
-	}
-	if(filename.find(".")>filename.length())
-		filename.append(".html");
-	else if(filename.find("?")<filename.length()){
-		int ask = filename.find("?");
-		filename = filename.substr(0,ask);
-	}
-	return filename;
+void Spider::printCrawled(){
+
+		cout << "URL crawled:"<<endl<<endl;
+		cout << "/" <<host << "/" << " -->";
+		int nspaces = host.size()+6;
+		set<string> childs = par_child[root];
+		set<string> alrd_visited;
+		alrd_visited.insert(root);	
+		for(set<string>::iterator it = childs.begin(); it!=childs.end(); ++it){
+			if(alrd_visited.find(*it)==alrd_visited.end()){
+				alrd_visited.insert(*it);
+				if(std::next(it)==childs.end()) cout << "\u2514" << *it << " \u2500\u2500\u2500";
+				else cout << "\u251c" << *it << " \u2500\u2500\u2500";
+				int nspaces2 = (*it).size()+4;
+				set<string> granchilds = par_child[*it];	
+				for(set<string>::iterator it2 = granchilds.begin(); it2!=granchilds.end(); ++it2){
+					if(it2==granchilds.begin())
+						cout << "\u252c" << *it2  << endl;
+					else if(std::next(it2) == granchilds.end())
+						cout << "\u2514" << *it2  << endl;
+					else
+						cout << "\u251c" << *it2  << endl;
+					for(int k =0; k<nspaces; k++) cout << " ";
+					if(std::next(it)==childs.end()) cout << " ";
+					else cout << "\u2502";
+					for(int k =0; k<nspaces2; k++) cout << " ";
+				}	
+			}
+			cout << endl;
+			for(int k =0; k<nspaces; k++) cout << " ";
+		}
+		cout << endl;
+	
 }
 
 
-void Spider::dump(int levels){
-	this->crawl(levels);
+void Spider::dump(){
+	this->crawl();
 	set<string> to_translate = visited_urls;
 
 	dictionary[root]="index.html";
@@ -194,48 +230,8 @@ void Spider::dump(int levels){
 
 	for(std::map<string,string>::iterator it=htmls.begin(); it!=htmls.end(); ++it){
 		cout << "Saving file: " << dictionary[it->first] << endl;
-        String_Functions::string_to_file(it->second, host.c_str(), dictionary[it->first].c_str());   
+        String_Functions::string2file(it->second, host.c_str(), dictionary[it->first].c_str());   
     }
     cout << "Files saved in " << host << endl;
    
-}
-
-
-void Spider::printCrawled(int levels){
-
-	if(levels==0){
-		cout << "URL crawled:"<<endl<<endl;
-		cout << root << "--> ";
-		int num_spaces = root.size()+5;
-		set<string> childs = par_child[root];	
-		for(set<string>::iterator it = childs.begin(); it!=childs.end(); ++it){
-			cout << *it << endl;
-			for(int s =0; s<num_spaces; s++) cout << " ";
-		
-		}
-		cout << endl;
-	}
-	else if(levels==1){
-		cout << "URL crawled:"<<endl<<endl;
-		cout << root << "--> ";
-		int num_spaces = root.size()+5;
-		set<string> childs = par_child[root];
-		set<string> alrd_visited;
-		alrd_visited.insert(root);	
-		for(set<string>::iterator it = childs.begin(); it!=childs.end(); ++it){
-			if(alrd_visited.find(*it)==alrd_visited.end()){
-				alrd_visited.insert(*it);
-				cout << *it << "--> ";
-				int num_spaces2 = num_spaces + (*it).size()+5;
-				set<string> granchilds = par_child[*it];	
-				for(set<string>::iterator it2 = granchilds.begin(); it2!=granchilds.end(); ++it2){
-					cout << *it2 << endl;
-					for(int k =0; k<num_spaces2; k++) cout << " ";
-				}	
-			}
-			cout << endl;
-			for(int k =0; k<num_spaces; k++) cout << " ";
-		}
-		cout << endl;
-	}
 }

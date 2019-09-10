@@ -22,7 +22,7 @@ Request::Request(std::string Request_String){
     version = fl_tokens[2];
     vector<string> temp;
     for( int i = 1; i<lines.size(); i++){
-         temp = String_Functions::split_on_first(lines[i], " ");
+         temp = String_Functions::splitOnFirst(lines[i], " ");
          fields[temp[0]] = temp[1];
     }
 

@@ -62,24 +62,24 @@ void sniffer(){
 	string req = server.get_client_request();
 	Request request = Request(req);
 	cout << "Request received - Host: " << request.fields["Host:"] << " URL: " << request.url << endl;
-	String_Functions::string_to_file(req, ".", "request.txt");
+	String_Functions::string2file(req, ".", "request.txt");
 	cout << "Edit Request? (Y/N)" << endl;
 	cin >> key;
 	if(key=='Y' || key=='y'){
 		system("notepad.exe request.txt");
 	}
-	req = String_Functions::string_from_file("request.txt");
+	req = String_Functions::stringFromFile("request.txt");
 
 
 	string reply = server.make_request(req);
 	Response response = Response(reply);
-	String_Functions::string_to_file(reply, ".", "response.txt");
+	String_Functions::string2file(reply, ".", "response.txt");
 	cout << "Edit Response from " << request.fields["Host:"] << "? (Y/N)" << endl;
 	cin >> key;
 	if(key=='Y' || key=='y'){
 		system("notepad.exe response.txt");
 	}
-	reply = String_Functions::string_from_file("response.txt");
+	reply = String_Functions::stringFromFile("response.txt");
 	server.reply_client(reply);
 	server.done();
 	cout << "Go back to menu (ENTER)" << endl;
@@ -106,8 +106,8 @@ void crawler(){
 		spider = Spider(url);
 	}
 	cout << "wait a moment..." << endl;
-	spider.crawl(test);
-	spider.printCrawled(test);
+	spider.crawl();
+	spider.printCrawled();
 	cout << "Go back to menu (ENTER)" << endl;
 	std::cin.ignore();
 	std::cin.ignore();
@@ -132,7 +132,7 @@ void dump(){
 		spider = Spider(url);
 	}
 	cout << "wait a moment..." << endl;
-	spider.dump(test);
+	spider.dump();
 	cout << "Go back to menu (ENTER)" << endl;
 	std::cin.ignore();
 	std::cin.ignore();

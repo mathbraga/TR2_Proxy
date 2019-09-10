@@ -23,7 +23,7 @@ std::vector<std::string> String_Functions::split(std::string str, const char * d
     return tokens;
 }
 
-std::vector<std::string> String_Functions::split_on_first(std::string str, const char * delimiter){
+std::vector<std::string> String_Functions::splitOnFirst(std::string str, const char * delimiter){
 
     vector<string> tokens;
     string os(delimiter);
@@ -44,7 +44,7 @@ std::vector<std::string> String_Functions::split_on_first(std::string str, const
 }
 
 
-int String_Functions::string_to_file(std::string str, const char *path, const char *file){
+int String_Functions::string2file(std::string str, const char *path, const char *file){
     FILE *f;
     string full_path(path);
     full_path.append("/");
@@ -57,7 +57,7 @@ int String_Functions::string_to_file(std::string str, const char *path, const ch
 }
 
 
-std::string String_Functions::string_from_file(const char*file){
+std::string String_Functions::stringFromFile(const char*file){
 
     FILE *f;
     char buffer[64768];

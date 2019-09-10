@@ -29,9 +29,9 @@ public:
 	bool isValid(std::string url);
 	std::string parseUrl(std::string url);
 	std::string url2filename(std::string url);
-	void crawl(int);
-	void printCrawled(int);
-	void dump(int);
+	void crawl();
+	void printCrawled();
+	void dump();
 
 };
 
